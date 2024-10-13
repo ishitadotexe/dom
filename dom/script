@@ -1,0 +1,68 @@
+import React, { useState, useEffect } from 'react';
+
+function ExerciseTracker() {
+  const [exercises, setExercises] = useState([]);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  const handleAddExercise = (name, duration) => {
+    setExercises([...exercises, { name, duration }]);
+  };
+
+  const handleStart = () => {
+    setIsRunning(true);
+    startNextExercise();
+  };
+
+  const handleSkip = () => {
+    setCurrentExerciseIndex(currentExerciseIndex + 1);
+    startNextExercise();
+  };
+
+  const handleEndTask = () => {
+    setIsRunning(false);
+    navigateToSummaryPage();
+  };
+
+  const startNextExercise = () => {
+    if (currentExerciseIndex >= exercises.length) {
+      navigateToSummaryPage();
+      return;
+    }
+
+    const currentExercise = exercises[currentExerciseIndex];
+    setTimeout(() => {
+      setCurrentExerciseIndex(currentExerciseIndex + 1);
+      startNextExercise();
+    }, currentExercise.duration * 1000 + 30000); // 30-second break
+  };
+
+  const navigateToSummaryPage = () => {
+    // Implement your logic to display exercise details and execution time on a new page
+    console.log('Task completed!');
+  };
+
+  return (
+    <div className="exercise-tracker">
+      <h1>Exercise Tracker</h1>
+      <div className="input-container">
+        <input type="text" placeholder="Exercise Name" />
+        <input type="number" placeholder="Time Duration (seconds)" />
+        <button onClick={() => handleAddExercise(nameInput.value, durationInput.value)}>Add Exercise</button>
+      </div>
+      <ul className="exercise-list">
+        {exercises.map((exercise, index) => (
+          <li key={index} className="exercise-item">
+            <p>{exercise.name}</p>
+            <p>{exercise.duration} seconds</p>
+            <button onClick={handleSkip}>Skip</button>
+          </li>
+        ))}
+      </ul>
+      <button onClick={handleStart} disabled={isRunning}>Start</button>
+      <button onClick={handleEndTask} disabled={!isRunning}>End Task</button>
+    </div>
+  );
+}
+
+export default ExerciseTracker;
